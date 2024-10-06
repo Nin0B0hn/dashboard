@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import { LoginForm } from "@/components/login-form"
 
 export default function Page() {
