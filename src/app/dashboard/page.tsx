@@ -1,8 +1,14 @@
 "use client";
+
 declare global {
+  interface UnityInstance {
+    Quit: () => Promise<void>;
+    SendMessage: (objectName: string, methodName: string, parameter?: string | number) => void;
+  }
+
   interface Window {
-    createUnityInstance: (canvas: HTMLCanvasElement | null, config: UnityConfig) => Promise<unknown>;
-    unityInstance?: { Quit: () => Promise<void> }; // Typ von unityInstance
+    createUnityInstance: (canvas: HTMLCanvasElement | null, config: UnityConfig) => Promise<UnityInstance>;
+    unityInstance?: UnityInstance;
   }
 }
 
@@ -24,7 +30,7 @@ const UnityWebGL = () => {
       document.body.appendChild(script);
 
       script.onload = () => {
-        const canvas = document.querySelector("#unityCanvas");
+        const canvas = document.querySelector("#unityCanvas") as HTMLCanvasElement;
         if (window.createUnityInstance && canvas) {
           window.createUnityInstance(canvas, {
             dataUrl: "/Build/Build.data",
@@ -32,7 +38,7 @@ const UnityWebGL = () => {
             codeUrl: "/Build/Build.wasm",
           }).then((unityInstance) => {
             console.log("Unity Instance Loaded");
-            window.unityInstance = unityInstance; // Unity-Instanz speichern
+            window.unityInstance = unityInstance;
           }).catch((message) => {
             console.error("Unity WebGL Fehler:", message);
           });
@@ -46,7 +52,7 @@ const UnityWebGL = () => {
           document.body.removeChild(script);
         }
         if (window.unityInstance) {
-          (window.unityInstance as { Quit: () => Promise<void> }).Quit().then(() => {
+          window.unityInstance.Quit().then(() => {
             console.log("Unity Instance beendet");
           });
         }
@@ -59,13 +65,10 @@ const UnityWebGL = () => {
   );
 };
 
-
 export default function DashboardPage() {
   return (
     <div style={{ display: 'flex', width: '100%', height: '100vh' }}>
-      {/* Sidebar */}
       <AppSidebar />
-      {/* Hauptinhalt */}
       <div style={{ flex: 1, position: 'relative' }}>
         <UnityWebGL />
       </div>

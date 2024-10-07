@@ -11,15 +11,9 @@ import {
 } from "@/components/ui/popover";
 import ColorPicker from "@/components/ColorPicker";
 import Draggable from "react-draggable";
-import { Resizable } from "react-resizable";
-import "react-resizable/css/styles.css";
 
 export function Poppy() {
-    const [size, setSize] = useState({ width: 320, height: 400 });
-
-    const onResize = (event, { size }) => {
-        setSize({ width: size.width, height: size.height });
-    };
+    const [size] = useState({ width: 320, height: 400 });
 
     return (
         <Popover>
@@ -27,15 +21,8 @@ export function Poppy() {
                 <Button variant="outline">Open popover</Button>
             </PopoverTrigger>
             <Draggable>
-                <Resizable
-                    width={size.width}
-                    height={size.height}
-                    onResize={onResize}
-                    minConstraints={[200, 200]}
-                    maxConstraints={[600, 600]}
-                >
                     <PopoverContent 
-                        className="poppy backdrop-blur-md bg-opacity-50 text-black p-4 rounded-md"
+                        className="poppy backdrop-blur-xl bg-opacity-50 text-black p-4 rounded-md"
                         style={{ width: size.width, height: size.height, overflow: 'auto' }}
                     >
                         <div className="grid gap-4">
@@ -66,7 +53,6 @@ export function Poppy() {
                             </div>
                         </div>
                     </PopoverContent>
-                </Resizable>
             </Draggable>
         </Popover>
     );
