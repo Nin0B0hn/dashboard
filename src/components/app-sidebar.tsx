@@ -266,6 +266,10 @@ export function AppSidebar() {
         <SidebarItem className="mt-auto">
           <Poppy />
         </SidebarItem>
+          <SidebarItem>
+          <SidebarLabel>Support</SidebarLabel>
+          <NavSecondary items={data.navSecondary} />
+        </SidebarItem>
         <SidebarItem>
           <StorageCard />
         </SidebarItem>
