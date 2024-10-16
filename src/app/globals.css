@@ -71,3 +71,8 @@
     
   }
 }
+
+input, textarea, button, select {
+  user-select: text !important;    /* Textauswahl aktivieren */
+  pointer-events: auto !important; /* Pointer-Ereignisse zulassen */
+}

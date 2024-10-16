@@ -35,7 +35,11 @@ import {
   SidebarItem,
   SidebarLabel,
 } from "@/components/ui/sidebar"
+
 import {Poppy} from '@/components/poppy';
+import {PollCreation} from '@/components/polly';
+import TestInput from "./test"
+
 
 const data = {
   teams: [
@@ -262,6 +266,9 @@ export function AppSidebar() {
         <SidebarItem>
           <SidebarLabel>Projects</SidebarLabel>
           <NavProjects projects={data.projects} />
+        </SidebarItem>
+        <SidebarItem className="mt-auto">
+          <PollCreation />
         </SidebarItem>
         <SidebarItem className="mt-auto">
           <Poppy />
