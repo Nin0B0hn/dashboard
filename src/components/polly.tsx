@@ -6,11 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import Draggable from "react-draggable";
+import { supabase } from "@/lib/supabaseClient"; // Supabase importieren
+import { useToast } from "@/hooks/use-toast"; // Toast importieren
 
 export function PollCreation() {
   const [pollQuestion, setPollQuestion] = useState("");
   const [options, setOptions] = useState<string[]>([""]);
   const [size] = useState({ width: 320, height: 400 });
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const { toast } = useToast(); // Verwende useToast
 
   const handleAddOption = () => {
     setOptions([...options, ""]);
@@ -22,10 +27,44 @@ export function PollCreation() {
     setOptions(newOptions);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Hier kannst du die Poll-Erstellungslogik mit supabase hinzufügen
-    console.log({ pollQuestion, options });
+
+    try {
+      // Poll-Daten in Supabase speichern
+      const { data, error } = await supabase
+        .from("polls")  // Tabelle in Supabase
+        .insert([
+          {
+            question: pollQuestion,
+            options: JSON.stringify(options), // Optionen als JSON speichern
+          },
+        ]);
+
+      if (error) {
+        console.error("Error inserting poll:", error);
+        toast({
+          title: "Error",
+          description: "There was an error creating the poll. Please try again.",
+          variant: "destructive", // Fehlermeldung
+        });
+      } else {
+        console.log("Poll inserted successfully:", data);
+        toast({
+          title: "Success",
+          description: "Poll created successfully!",
+        });
+        setPollQuestion(""); // Reset der Felder
+        setOptions([""]);
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive", // Fehlermeldung
+      });
+    }
   };
 
   return (
@@ -33,7 +72,8 @@ export function PollCreation() {
       <PopoverTrigger asChild>
         <Button variant="outline">Create Poll</Button>
       </PopoverTrigger>
-      <Draggable cancel="input,button,textarea">
+
+      <Draggable disabled={isInputFocused}>
         <PopoverContent
           className="poppy backdrop-blur-xl bg-opacity-50 text-black p-4 rounded-md"
           style={{ width: size.width, height: size.height, overflow: "auto" }}
@@ -52,6 +92,8 @@ export function PollCreation() {
                   id="pollQuestion"
                   value={pollQuestion}
                   onChange={(e) => setPollQuestion(e.target.value)}
+                  onFocus={() => setIsInputFocused(true)}  // Draggable deaktivieren
+                  onBlur={() => setIsInputFocused(false)}   // Draggable aktivieren
                   className="col-span-2 h-8"
                   placeholder="Enter poll question"
                   required
@@ -65,6 +107,8 @@ export function PollCreation() {
                     id={`option-${idx + 1}`}
                     value={option}
                     onChange={(e) => handleOptionChange(idx, e.target.value)}
+                    onFocus={() => setIsInputFocused(true)}  // Draggable deaktivieren
+                    onBlur={() => setIsInputFocused(false)}   // Draggable aktivieren
                     className="col-span-2 h-8"
                     placeholder={`Enter option ${idx + 1}`}
                     required

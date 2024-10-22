@@ -7,10 +7,10 @@
 @layer base {
   :root {
     --background: 0 0% 100% /30%;
-    --foreground: 0 0% %;
+    --foreground: 0 0% 0%;
     --card: 0 0% 100% /50%;
     --card-foreground: 0 0% 0%;
-    --popover: 0 0% 100% /10%;
+    --popover: 0 0% 100% /30%;
     --popover-foreground: 0 0% 0%;
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
@@ -72,7 +72,4 @@
   }
 }
 
-input, textarea, button, select {
-  user-select: text !important;    /* Textauswahl aktivieren */
-  pointer-events: auto !important; /* Pointer-Ereignisse zulassen */
-}
+

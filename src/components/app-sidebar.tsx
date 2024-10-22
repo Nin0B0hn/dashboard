@@ -38,7 +38,11 @@ import {
 
 import {Poppy} from '@/components/poppy';
 import {PollCreation} from '@/components/polly';
-import TestInput from "./test"
+import { PollResults } from "@/components/ui/poll-results";
+import { PollVoting } from "@/components/ui/poll-voting";
+import { CubeCreator } from "@/components/CubeCreator";
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 
 const data = {
@@ -254,10 +258,12 @@ const data = {
 
 export function AppSidebar() {
   return (
+  
     <Sidebar>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
+      <ScrollArea className="h-full">
       <SidebarContent>
         <SidebarItem>
           <SidebarLabel>Admin</SidebarLabel>
@@ -268,11 +274,21 @@ export function AppSidebar() {
           <NavProjects projects={data.projects} />
         </SidebarItem>
         <SidebarItem className="mt-auto">
+          <CubeCreator />
+        </SidebarItem>
+        <SidebarItem className="mt-auto">
           <PollCreation />
         </SidebarItem>
         <SidebarItem className="mt-auto">
           <Poppy />
         </SidebarItem>
+        <SidebarItem className="mt-auto">
+          <PollResults />
+        </SidebarItem>
+        <SidebarItem className="mt-auto">
+          <PollVoting />
+        </SidebarItem>
+        
           <SidebarItem>
           <SidebarLabel>Support</SidebarLabel>
           <NavSecondary items={data.navSecondary} />
@@ -281,9 +297,11 @@ export function AppSidebar() {
           <StorageCard />
         </SidebarItem>
       </SidebarContent>
+      </ScrollArea>
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
+          
   )
 }

@@ -49,7 +49,7 @@ export function NavMain({
       {items.map((item) => (
         <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
           <li>
-            <div className="relative flex items-center">
+            <div className="relative flex items-center ">
               <Link
                 href={item.url}
                 className="min-w-8 flex h-8 flex-1 items-center gap-2 overflow-hidden rounded-md px-1.5 text-sm font-medium outline-none ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
