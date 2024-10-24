@@ -7,7 +7,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import Draggable from "react-draggable";
-import { useToast } from "@/hooks/use-toast"; // Korrigierter Toast-Import
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabaseClient";
 import {
   Form,
@@ -29,7 +29,7 @@ const FormSchema = z.object({
 interface Poll {
   id: string;
   question: string;
-  options: string[]; // Optionen als Array
+  options: string[]; // Optionen als Array von Strings
 }
 
 // Typ für Vote-Daten
@@ -40,7 +40,7 @@ interface Vote {
 
 export function PollVoting() {
   const [polls, setPolls] = useState<Poll[]>([]);
-  const { toast } = useToast(); // Korrigierter Toast-Aufruf
+  const { toast } = useToast();
   const [size] = useState({ width: 320, height: 400 });
   const [isInputFocused] = useState(false); // Für Draggable Popout
 
@@ -61,13 +61,18 @@ export function PollVoting() {
         variant: "destructive",
       });
     } else {
-      setPolls(data || []);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const parsedData = data?.map((poll: any) => ({
+        ...poll,
+        options: JSON.parse(poll.options), // Parsen des JSON-Strings in ein Array
+      }));
+      setPolls(parsedData || []);
     }
-  }, [toast]); // 'toast' als Abhängigkeit hinzugefügt
+  }, [toast]);
 
   useEffect(() => {
     fetchPolls();
-  }, [fetchPolls]); // 'fetchPolls' als Abhängigkeit hinzugefügt
+  }, [fetchPolls]);
 
   // Abstimmungslogik
   const handleVoteSubmit = async (data: z.infer<typeof FormSchema>) => {
@@ -163,7 +168,7 @@ export function PollVoting() {
                           {polls
                             .filter((poll) => poll.id === form.getValues("poll"))
                             .map((poll) =>
-                              JSON.parse(poll.options).map((option: string, idx: number) => (
+                              poll.options.map((option: string, idx: number) => (
                                 <FormItem key={idx} className="space-y-3">
                                   <FormControl>
                                     <RadioGroupItem value={option} />
