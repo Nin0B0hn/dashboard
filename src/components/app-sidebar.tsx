@@ -19,6 +19,10 @@ import {
   SquareTerminal,
   Star,
   Turtle,
+  Microscope,
+  ChartColumn,
+  FilePlus,
+  Vote,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -119,6 +123,29 @@ const data = {
           icon: Turtle,
           description: "The most powerful model for complex computations.",
         },
+
+      ],
+    },
+    {
+      title: "Research",
+      url: "#",
+      icon: Microscope,
+      items: [
+        {
+          title: "Create Poll",
+          url: "#",
+          icon: FilePlus,
+        },
+        {
+          title: "View Polls",
+          url: "#",
+          icon: ChartColumn
+        },
+        {
+          title: "Vote in Polls",
+          url: "#",
+          icon: Vote
+        },
       ],
     },
     {
@@ -155,18 +182,6 @@ const data = {
         },
         {
           title: "Enviromental-Database",
-          url: "#",
-        },
-        {
-          title: "IoT",
-          url: "#",
-        },
-        {
-          title: "...",
-          url: "#",
-        },
-        {
-          title: "...",
           url: "#",
         },
       ],
@@ -304,4 +319,4 @@ export function AppSidebar() {
     </Sidebar>
           
   )
-}
+};
