@@ -1,11 +1,15 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Draggable from "react-draggable";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabaseClient";
@@ -18,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 
 // Schema für die Form-Validierung mit zod
 const FormSchema = z.object({
@@ -25,17 +30,22 @@ const FormSchema = z.object({
   option: z.string().nonempty("You need to select an option."),
 });
 
-// Typ für Poll-Daten
+// Typen für Poll-Daten
+interface PollOption {
+  label: string;
+  value: number;
+}
+
 interface Poll {
   id: string;
   question: string;
-  options: string[]; // Optionen als Array von Strings
+  options: PollOption[];
 }
 
 // Typ für Vote-Daten
 interface Vote {
   poll_id: string;
-  option_selected: string;
+  option_selected: number;
 }
 
 export function PollVoting() {
@@ -44,14 +54,31 @@ export function PollVoting() {
   const [size] = useState({ width: 320, height: 400 });
   const [isInputFocused] = useState(false); // Für Draggable Popout
 
+  // Zustand für den Suchbegriff
+  const [searchTerm, setSearchTerm] = useState("");
+
   // react-hook-form Setup mit zod Resolver
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  // Polls beim Laden der Komponente abrufen
+  // Verwende den watch-Hook, um den Wert von "poll" zu beobachten
+  const {
+    watch,
+    control,
+    handleSubmit,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    formState: { errors },
+    setValue,
+  } = form;
+
+  const selectedPollId = watch("poll"); // Beobachte das "poll"-Feld
+
+  // Polls abrufen
   const fetchPolls = useCallback(async () => {
-    const { data, error } = await supabase.from("polls").select("id, question, options");
+    const { data, error } = await supabase
+      .from("polls")
+      .select("id, question, options");
 
     if (error) {
       console.error("Error fetching polls:", error);
@@ -63,24 +90,26 @@ export function PollVoting() {
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parsedData = data?.map((poll: any) => ({
-        ...poll,
-        options: JSON.parse(poll.options), // Parsen des JSON-Strings in ein Array
+        id: poll.id,
+        question: poll.question,
+        options:
+          typeof poll.options === "string"
+            ? JSON.parse(poll.options)
+            : poll.options,
       }));
       setPolls(parsedData || []);
     }
   }, [toast]);
 
-  useEffect(() => {
-    fetchPolls();
-  }, [fetchPolls]);
-
   // Abstimmungslogik
   const handleVoteSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       const { poll, option } = data;
+      const optionValue = parseInt(option, 10);
+
       const { error } = await supabase
         .from("votes")
-        .insert([{ poll_id: poll, option_selected: option } as Vote]);
+        .insert([{ poll_id: poll, option_selected: optionValue } as Vote]);
 
       if (error) {
         console.error("Error submitting vote:", error);
@@ -94,14 +123,24 @@ export function PollVoting() {
           title: "Success",
           description: "Your vote has been submitted successfully!",
         });
+        // Formular zurücksetzen
+        form.reset();
       }
     } catch (error) {
       console.error("An error occurred:", error);
     }
   };
 
+  // Umfragen basierend auf dem Suchbegriff filtern
+  const filteredPolls = polls.filter((poll) =>
+    poll.question.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Finde die aktuell ausgewählte Umfrage
+  const selectedPoll = filteredPolls.find((poll) => poll.id === selectedPollId);
+
   return (
-    <Popover>
+    <Popover onOpenChange={(open) => open && fetchPolls()}>
       <PopoverTrigger asChild>
         <Button variant="outline">Vote in Polls</Button>
       </PopoverTrigger>
@@ -113,38 +152,64 @@ export function PollVoting() {
         >
           <div className="grid gap-4">
             <div className="space-y-2">
-              <h4 className="font-medium leading-none">Current Polls</h4>
+              <h4 className="font-medium leading-none">Aktuelle Umfragen</h4>
               <p className="text-sm text-muted-foreground">
-                Select a poll and an option to vote
+                Wähle eine Umfrage und eine Option zum Abstimmen
               </p>
+
+              {/* Suchfeld */}
+              <div className="mb-4">
+                <Input
+                  type="text"
+                  placeholder="Umfragen durchsuchen..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
 
             {/* Form starten */}
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleVoteSubmit)} className="space-y-6">
+              <form
+                onSubmit={handleSubmit(handleVoteSubmit)}
+                className="space-y-6"
+              >
                 {/* Poll auswählen */}
                 <FormField
-                  control={form.control}
+                  control={control}
                   name="poll"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel>Choose a poll</FormLabel>
+                      <FormLabel>Wähle eine Umfrage</FormLabel>
                       <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          {/* Polls Liste anzeigen */}
-                          {polls.map((poll) => (
-                            <FormItem key={poll.id} className="space-y-3">
-                              <FormControl>
-                                <RadioGroupItem value={poll.id} />
-                              </FormControl>
-                              <FormLabel className="font-normal">{poll.question}</FormLabel>
-                            </FormItem>
-                          ))}
-                        </RadioGroup>
+                        {filteredPolls.length > 0 ? (
+                          <RadioGroup
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setValue("option", ""); // Option zurücksetzen
+                            }}
+                            value={field.value}
+                            className="flex flex-col space-y-1"
+                          >
+                            {filteredPolls.map((poll) => (
+                              <FormItem
+                                key={poll.id}
+                                className="flex items-center space-x-3"
+                              >
+                                <FormControl>
+                                  <RadioGroupItem value={poll.id} />
+                                </FormControl>
+                                <FormLabel className="font-normal">
+                                  {poll.question}
+                                </FormLabel>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">
+                            Keine Umfragen gefunden.
+                          </p>
+                        )}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -152,41 +217,48 @@ export function PollVoting() {
                 />
 
                 {/* Option auswählen */}
-                <FormField
-                  control={form.control}
-                  name="option"
-                  render={({ field }) => (
-                    <FormItem className="space-y-3">
-                      <FormLabel>Select an option</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
-                        >
-                          {/* Optionen der aktuellen Poll anzeigen */}
-                          {polls
-                            .filter((poll) => poll.id === form.getValues("poll"))
-                            .map((poll) =>
-                              poll.options.map((option: string, idx: number) => (
-                                <FormItem key={idx} className="space-y-3">
+                {selectedPoll && (
+                  <FormField
+                    control={control}
+                    name="option"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Wähle eine Option</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="flex flex-col space-y-1"
+                          >
+                            {/* Optionen der aktuell ausgewählten Umfrage anzeigen */}
+                            {selectedPoll.options.map(
+                              (option: PollOption, idx: number) => (
+                                <FormItem
+                                  key={idx}
+                                  className="flex items-center space-x-3"
+                                >
                                   <FormControl>
-                                    <RadioGroupItem value={option} />
+                                    <RadioGroupItem
+                                      value={option.value.toString()}
+                                    />
                                   </FormControl>
-                                  <FormLabel className="font-normal">{option}</FormLabel>
+                                  <FormLabel className="font-normal">
+                                    {option.label}
+                                  </FormLabel>
                                 </FormItem>
-                              ))
+                              )
                             )}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {/* Submit Button */}
                 <Button type="submit" className="w-full">
-                  Submit Vote
+                  Abstimmen
                 </Button>
               </form>
             </Form>

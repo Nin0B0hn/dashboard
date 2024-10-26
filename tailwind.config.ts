@@ -1,14 +1,15 @@
-import type { Config } from "tailwindcss"
-import plugin from 'tailwindcss-animate'
+import type { Config } from "tailwindcss";
+import animatePlugin from "tailwindcss-animate";
+import scrollbarPlugin from "tailwind-scrollbar";
 
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -75,10 +76,14 @@ const config = {
       },
     },
   },
+  // Falls du Varianten für die Scrollbar benötigst
+  // variants: {
+  //   scrollbar: ["rounded"],
+  // },
   plugins: [
-    plugin,
+    animatePlugin,
+    scrollbarPlugin({ nocompatible: true }), // Scrollbar-Plugin hinzufügen
   ],
+} satisfies Config;
 
-} satisfies Config
-
-export default config
+export default config;

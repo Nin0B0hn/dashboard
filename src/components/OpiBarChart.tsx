@@ -19,4 +19,3 @@ const OpiBarChart: React.FC<OpiBarChartProps> = ({ opiValue }) => {
 };
 
 export default OpiBarChart;
-

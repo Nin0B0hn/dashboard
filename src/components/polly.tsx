@@ -9,21 +9,29 @@ import Draggable from "react-draggable";
 import { supabase } from "@/lib/supabaseClient"; // Supabase importieren
 import { useToast } from "@/hooks/use-toast"; // Toast importieren
 
+interface Option {
+  label: string;
+  value: number;
+}
+
 export function PollCreation() {
   const [pollQuestion, setPollQuestion] = useState("");
-  const [options, setOptions] = useState<string[]>([""]);
+  const [options, setOptions] = useState<Option[]>([{ label: "", value: 1 }]);
   const [size] = useState({ width: 320, height: 400 });
   const [isInputFocused, setIsInputFocused] = useState(false);
 
   const { toast } = useToast(); // Verwende useToast
 
   const handleAddOption = () => {
-    setOptions([...options, ""]);
+    setOptions([
+      ...options,
+      { label: "", value: options.length + 1 },
+    ]);
   };
 
-  const handleOptionChange = (index: number, value: string) => {
+  const handleOptionChange = (index: number, field: "label", value: string) => {
     const newOptions = [...options];
-    newOptions[index] = value;
+    newOptions[index][field] = value;
     setOptions(newOptions);
   };
 
@@ -33,11 +41,11 @@ export function PollCreation() {
     try {
       // Poll-Daten in Supabase speichern
       const { data, error } = await supabase
-        .from("polls")  // Tabelle in Supabase
+        .from("polls") // Tabelle in Supabase
         .insert([
           {
             question: pollQuestion,
-            options: JSON.stringify(options), // Optionen als JSON speichern
+            options: options, // Optionen als Array von Objekten speichern
           },
         ]);
 
@@ -46,7 +54,7 @@ export function PollCreation() {
         toast({
           title: "Error",
           description: "There was an error creating the poll. Please try again.",
-          variant: "destructive", // Fehlermeldung
+          variant: "destructive",
         });
       } else {
         console.log("Poll inserted successfully:", data);
@@ -54,15 +62,15 @@ export function PollCreation() {
           title: "Success",
           description: "Poll created successfully!",
         });
-        setPollQuestion(""); // Reset der Felder
-        setOptions([""]);
+        setPollQuestion("");
+        setOptions([{ label: "", value: 1 }]);
       }
     } catch (error) {
       console.error("An error occurred:", error);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
-        variant: "destructive", // Fehlermeldung
+        variant: "destructive",
       });
     }
   };
@@ -92,8 +100,8 @@ export function PollCreation() {
                   id="pollQuestion"
                   value={pollQuestion}
                   onChange={(e) => setPollQuestion(e.target.value)}
-                  onFocus={() => setIsInputFocused(true)}  // Draggable deaktivieren
-                  onBlur={() => setIsInputFocused(false)}   // Draggable aktivieren
+                  onFocus={() => setIsInputFocused(true)} // Draggable deaktivieren
+                  onBlur={() => setIsInputFocused(false)} // Draggable aktivieren
                   className="col-span-2 h-8"
                   placeholder="Enter poll question"
                   required
@@ -102,15 +110,15 @@ export function PollCreation() {
 
               {options.map((option, idx) => (
                 <div key={idx} className="grid grid-cols-3 items-center gap-4">
-                  <Label htmlFor={`option-${idx + 1}`}>Option {idx + 1}</Label>
+                  <Label htmlFor={`option-label-${idx + 1}`}>Option {idx + 1}</Label>
                   <Input
-                    id={`option-${idx + 1}`}
-                    value={option}
-                    onChange={(e) => handleOptionChange(idx, e.target.value)}
-                    onFocus={() => setIsInputFocused(true)}  // Draggable deaktivieren
-                    onBlur={() => setIsInputFocused(false)}   // Draggable aktivieren
+                    id={`option-label-${idx + 1}`}
+                    value={option.label}
+                    onChange={(e) => handleOptionChange(idx, "label", e.target.value)}
+                    onFocus={() => setIsInputFocused(true)} // Draggable deaktivieren
+                    onBlur={() => setIsInputFocused(false)} // Draggable aktivieren
                     className="col-span-2 h-8"
-                    placeholder={`Enter option ${idx + 1}`}
+                    placeholder={`Enter option ${idx + 1} label`}
                     required
                   />
                 </div>

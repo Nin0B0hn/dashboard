@@ -21,8 +21,13 @@ import { Progress } from "@/components/ui/progress";
 interface SupabasePoll {
   id: string;
   question: string;
-  options: string | string[]; // Kann String oder Array sein
+  options: string | PollOption[]; // Angepasst für die neuen Optionen
   votes_count: string | { [key: string]: number }; // Kann String oder Objekt sein
+}
+
+interface PollOption {
+  label: string;
+  value: number;
 }
 
 interface Poll {
@@ -55,7 +60,7 @@ export function PollResults() {
     } else if (data) {
       const parsedData = data.map((poll: SupabasePoll) => {
         // Parsen von options
-        let optionsArray: string[] = [];
+        let optionsArray: PollOption[] = [];
         if (typeof poll.options === "string") {
           optionsArray = JSON.parse(poll.options);
         } else if (Array.isArray(poll.options)) {
@@ -70,8 +75,8 @@ export function PollResults() {
           votesCountObj = poll.votes_count;
         }
 
-        // Definiere die extremen Optionen
-        const extremeOptions = ["1", "5"]; // Passe dies an deine Optionen an
+        // Definiere die extremen Werte
+        const extremeValues = [1, 5]; // Passe dies an deine Optionen an
 
         // Berechnung der Gesamtzahl der Stimmen
         const totalVotes = Object.values(votesCountObj).reduce(
@@ -80,8 +85,11 @@ export function PollResults() {
         );
 
         // Berechnung der Anzahl der extremen Stimmen
-        const extremeVotes = extremeOptions.reduce((acc, option) => {
-          return acc + (votesCountObj[option] || 0);
+        const extremeVotes = optionsArray.reduce((acc, option) => {
+          if (extremeValues.includes(option.value)) {
+            return acc + (votesCountObj[option.value] || 0);
+          }
+          return acc;
         }, 0);
 
         // Berechnung des OPI
@@ -90,9 +98,9 @@ export function PollResults() {
         return {
           id: poll.id,
           question: poll.question,
-          options: optionsArray.map((option: string) => ({
-            name: option,
-            votes: votesCountObj[option] || 0,
+          options: optionsArray.map((option: PollOption) => ({
+            name: option.label,
+            votes: votesCountObj[option.value] || 0,
           })),
           opi,
         } as Poll;
