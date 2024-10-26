@@ -2,11 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import Draggable from "react-draggable";
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 
 // Interfaces
 interface SupabasePoll {
@@ -20,11 +29,16 @@ interface Poll {
   id: string;
   question: string;
   options: { name: string; votes: number }[]; // Für das Diagramm
+  opi: number;
 }
 
 export function PollResults() {
   const [pollResults, setPollResults] = useState<Poll[]>([]);
-  const [size] = useState({ width: 500, height: 500 });
+  const [size] = useState({ width: 500, height: 600 });
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [minOpi, setMinOpi] = useState(0);
+  const [maxOpi, setMaxOpi] = useState(100);
 
   // Abrufen der Poll-Ergebnisse von Supabase
   useEffect(() => {
@@ -40,11 +54,7 @@ export function PollResults() {
       console.error("Error fetching poll results:", error);
     } else if (data) {
       const parsedData = data.map((poll: SupabasePoll) => {
-        // Überprüfe den Typ von poll.options
-        console.log("poll.options:", poll.options);
-        console.log("Type of poll.options:", typeof poll.options);
-
-        // Parsen von options, falls notwendig
+        // Parsen von options
         let optionsArray: string[] = [];
         if (typeof poll.options === "string") {
           optionsArray = JSON.parse(poll.options);
@@ -52,13 +62,30 @@ export function PollResults() {
           optionsArray = poll.options;
         }
 
-        // Parsen von votes_count, falls notwendig
+        // Parsen von votes_count
         let votesCountObj: { [key: string]: number } = {};
         if (typeof poll.votes_count === "string") {
           votesCountObj = JSON.parse(poll.votes_count);
         } else if (poll.votes_count && typeof poll.votes_count === "object") {
           votesCountObj = poll.votes_count;
         }
+
+        // Definiere die extremen Optionen
+        const extremeOptions = ["1", "5"]; // Passe dies an deine Optionen an
+
+        // Berechnung der Gesamtzahl der Stimmen
+        const totalVotes = Object.values(votesCountObj).reduce(
+          (acc, count) => acc + count,
+          0
+        );
+
+        // Berechnung der Anzahl der extremen Stimmen
+        const extremeVotes = extremeOptions.reduce((acc, option) => {
+          return acc + (votesCountObj[option] || 0);
+        }, 0);
+
+        // Berechnung des OPI
+        const opi = totalVotes > 0 ? extremeVotes / totalVotes : 0;
 
         return {
           id: poll.id,
@@ -67,11 +94,21 @@ export function PollResults() {
             name: option,
             votes: votesCountObj[option] || 0,
           })),
+          opi,
         } as Poll;
       });
       setPollResults(parsedData);
     }
   };
+
+  const filteredPollResults = pollResults.filter((poll) => {
+    const opiPercentage = poll.opi * 100;
+    const matchesSearch = poll.question
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesOpi = opiPercentage >= minOpi && opiPercentage <= maxOpi;
+    return matchesSearch && matchesOpi;
+  });
 
   return (
     <Popover onOpenChange={(open) => open && fetchPollResults()}>
@@ -87,12 +124,53 @@ export function PollResults() {
             <div className="grid gap-4">
               <div className="space-y-2">
                 <h4 className="font-medium leading-none">Poll Results</h4>
-                {pollResults.length === 0 ? (
+
+                {/* Filter-Eingabefelder */}
+                <div className="flex space-x-4 mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search Polls"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border p-2 rounded"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Min OPI"
+                    value={minOpi}
+                    onChange={(e) => setMinOpi(Number(e.target.value))}
+                    className="border p-2 rounded"
+                    min={0}
+                    max={100}
+                    step={0.01}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max OPI"
+                    value={maxOpi}
+                    onChange={(e) => setMaxOpi(Number(e.target.value))}
+                    className="border p-2 rounded"
+                    min={0}
+                    max={100}
+                    step={0.01}
+                  />
+                </div>
+
+                {filteredPollResults.length === 0 ? (
                   <p>No results available yet.</p>
                 ) : (
-                  pollResults.map((poll) => (
-                    <div key={poll.id} className="space-y-2">
+                  filteredPollResults.map((poll) => (
+                    <div key={poll.id} className="space-y-4">
                       <h5 className="font-medium">{poll.question}</h5>
+
+                      {/* Anzeige des OPI */}
+                      <div className="text-sm text-muted-foreground">
+                        Opinion Polarization Index (OPI):{" "}
+                        {(poll.opi * 100).toFixed(2)}%
+                      </div>
+
+                      {/* Fortschrittsanzeige mit shadcn Progress */}
+                      <Progress value={poll.opi * 100} className="w-full" />
 
                       {/* Chart Container */}
                       <ResponsiveContainer width="100%" height={300}>
@@ -104,7 +182,6 @@ export function PollResults() {
                           <Bar dataKey="votes" fill="#82ca9d" />
                         </BarChart>
                       </ResponsiveContainer>
-
                     </div>
                   ))
                 )}
