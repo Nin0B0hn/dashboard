@@ -12,10 +12,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import Draggable from "react-draggable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import { interpretOPI } from '@/utils/interpretOPI';
 
 // Interfaces
 interface SupabasePoll {
@@ -75,8 +77,14 @@ export function PollResults() {
           votesCountObj = poll.votes_count;
         }
 
-        // Definiere die extremen Werte
-        const extremeValues = [1, 5]; // Passe dies an deine Optionen an
+        // Definiere die extremen Werte dynamisch basierend auf den Optionen
+        const extremeValues =
+        optionsArray.length >= 2
+          ? [optionsArray[0].value, optionsArray[optionsArray.length - 1].value]
+          : optionsArray.length === 1
+          ? [optionsArray[0].value]
+          : [];
+
 
         // Berechnung der Gesamtzahl der Stimmen
         const totalVotes = Object.values(votesCountObj).reduce(
@@ -174,7 +182,7 @@ export function PollResults() {
                       {/* Anzeige des OPI */}
                       <div className="text-sm text-muted-foreground">
                         Opinion Polarization Index (OPI):{" "}
-                        {(poll.opi * 100).toFixed(2)}%
+                        {(poll.opi * 100).toFixed(2)}% - {interpretOPI(poll.opi)}
                       </div>
 
                       {/* Fortschrittsanzeige mit shadcn Progress */}
@@ -187,7 +195,7 @@ export function PollResults() {
                           <XAxis dataKey="name" />
                           <YAxis allowDecimals={false} />
                           <Tooltip />
-                          <Bar dataKey="votes" fill="#82ca9d" />
+                          <Bar dataKey="votes" fill="#40ca9d" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>

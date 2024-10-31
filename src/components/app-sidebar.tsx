@@ -23,6 +23,7 @@ import {
   ChartColumn,
   FilePlus,
   Vote,
+  Headphones
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -41,11 +42,13 @@ import {
 } from "@/components/ui/sidebar"
 
 import {Poppy} from '@/components/poppy';
-import {PollCreation} from '@/components/polly';
-import { PollResults } from "@/components/ui/poll-results";
-import { PollVoting } from "@/components/ui/poll-voting";
-import { CubeCreator } from "@/components/CubeCreator";
+import {PollCreation} from '@/components/poll-components/poll-create';
+import { PollResults } from "@/components/poll-components/poll-results";
+import { PollVoting } from "@/components/poll-components/poll-voting";
 import { ScrollArea } from "@/components/ui/scroll-area"
+// import AddAnnotation from "@/components/add-annotation"
+
+
 
 
 
@@ -63,7 +66,7 @@ const data = {
     },
     {
       name: "Berlin",
-      logo: Rabbit,
+      logo: Headphones,
       plan: "Wind and Solar",
     },
   ],
@@ -272,6 +275,7 @@ const data = {
 }
 
 export function AppSidebar() {
+
   return (
   
     <Sidebar>
@@ -288,11 +292,14 @@ export function AppSidebar() {
           <SidebarLabel>Projects</SidebarLabel>
           <NavProjects projects={data.projects} />
         </SidebarItem>
-        <SidebarItem className="mt-auto">
-          <CubeCreator />
+        <SidebarItem>
+          <SidebarLabel>Research</SidebarLabel>
+          <NavProjects projects={data.projects} />
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <PollCreation />
+        </SidebarItem>
+        <SidebarItem className="mt-auto">
+          <PollCreation/>
         </SidebarItem>
         <SidebarItem className="mt-auto">
           <Poppy />
@@ -303,7 +310,6 @@ export function AppSidebar() {
         <SidebarItem className="mt-auto">
           <PollVoting />
         </SidebarItem>
-        
           <SidebarItem>
           <SidebarLabel>Support</SidebarLabel>
           <NavSecondary items={data.navSecondary} />
@@ -316,7 +322,6 @@ export function AppSidebar() {
       <SidebarFooter>
         <NavUser user={data.user} />
       </SidebarFooter>
-    </Sidebar>
-          
+    </Sidebar>         
   )
 };

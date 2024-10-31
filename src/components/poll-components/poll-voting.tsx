@@ -152,16 +152,16 @@ export function PollVoting() {
         >
           <div className="grid gap-4">
             <div className="space-y-2">
-              <h4 className="font-medium leading-none">Aktuelle Umfragen</h4>
+              <h4 className="font-medium leading-none">Recent polls</h4>
               <p className="text-sm text-muted-foreground">
-                Wähle eine Umfrage und eine Option zum Abstimmen
+                Choose a poll and an option to vote
               </p>
 
               {/* Suchfeld */}
               <div className="mb-4">
                 <Input
                   type="text"
-                  placeholder="Umfragen durchsuchen..."
+                  placeholder="search polls..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -180,7 +180,7 @@ export function PollVoting() {
                   name="poll"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel>Wähle eine Umfrage</FormLabel>
+                      <FormLabel>Choose a poll</FormLabel>
                       <FormControl>
                         {filteredPolls.length > 0 ? (
                           <RadioGroup
@@ -207,7 +207,7 @@ export function PollVoting() {
                           </RadioGroup>
                         ) : (
                           <p className="text-sm text-muted-foreground">
-                            Keine Umfragen gefunden.
+                            No poll found.
                           </p>
                         )}
                       </FormControl>
@@ -223,7 +223,7 @@ export function PollVoting() {
                     name="option"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel>Wähle eine Option</FormLabel>
+                        <FormLabel>Choose an option</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -258,7 +258,7 @@ export function PollVoting() {
 
                 {/* Submit Button */}
                 <Button type="submit" className="w-full">
-                  Abstimmen
+                  Submit
                 </Button>
               </form>
             </Form>

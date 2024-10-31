@@ -18,7 +18,7 @@ export function PollCreation() {
   const [pollQuestion, setPollQuestion] = useState("");
   const [options, setOptions] = useState<Option[]>([{ label: "", value: 1 }]);
   const [size] = useState({ width: 320, height: 400 });
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isInputFocused] = useState(false);
 
   const { toast } = useToast(); // Verwende useToast
 
@@ -80,7 +80,7 @@ export function PollCreation() {
       <PopoverTrigger asChild>
         <Button variant="outline">Create Poll</Button>
       </PopoverTrigger>
-
+      
       <Draggable disabled={isInputFocused}>
         <PopoverContent
           className="poppy backdrop-blur-xl bg-opacity-50 text-black p-4 rounded-md"
@@ -100,9 +100,7 @@ export function PollCreation() {
                   id="pollQuestion"
                   value={pollQuestion}
                   onChange={(e) => setPollQuestion(e.target.value)}
-                  onFocus={() => setIsInputFocused(true)} // Draggable deaktivieren
-                  onBlur={() => setIsInputFocused(false)} // Draggable aktivieren
-                  className="col-span-2 h-8"
+                  className="col-span-2 h-8 border p-2 rounded"
                   placeholder="Enter poll question"
                   required
                 />
@@ -115,8 +113,6 @@ export function PollCreation() {
                     id={`option-label-${idx + 1}`}
                     value={option.label}
                     onChange={(e) => handleOptionChange(idx, "label", e.target.value)}
-                    onFocus={() => setIsInputFocused(true)} // Draggable deaktivieren
-                    onBlur={() => setIsInputFocused(false)} // Draggable aktivieren
                     className="col-span-2 h-8"
                     placeholder={`Enter option ${idx + 1} label`}
                     required

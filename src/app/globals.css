@@ -64,6 +64,7 @@
 @layer base {
   * {
     @apply border-border;
+    @apply scrollbar scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thumb-gray-300 scrollbar-track-transparent;
 
   }
 
