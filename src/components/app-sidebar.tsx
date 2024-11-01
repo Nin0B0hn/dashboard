@@ -30,7 +30,7 @@ import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
-import { StorageCard } from "@/components/storage-card"
+// import { StorageCard } from "@/components/storage-card"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
@@ -39,18 +39,15 @@ import {
   SidebarHeader,
   SidebarItem,
   SidebarLabel,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
-import {Poppy} from '@/components/poppy';
-import {PollCreation} from '@/components/poll-components/poll-create';
-import { PollResults } from "@/components/poll-components/poll-results";
-import { PollVoting } from "@/components/poll-components/poll-voting";
+// import {Poppy} from '@/components/poppy';
+// import {PollCreation} from '@/components/poll-components/poll-create';
+// import { PollResults } from "@/components/poll-components/poll-results";
+// import { PollVoting } from "@/components/poll-components/poll-voting";
 import { ScrollArea } from "@/components/ui/scroll-area"
-// import AddAnnotation from "@/components/add-annotation"
-
-
-
-
+import {ControlSettings} from "@/components/menus/ControlSettings";
 
 const data = {
   teams: [
@@ -294,28 +291,30 @@ export function AppSidebar() {
         </SidebarItem>
         <SidebarItem>
           <SidebarLabel>Research</SidebarLabel>
-          <NavProjects projects={data.projects} />
+          <SidebarTrigger>  
+            
+          </SidebarTrigger>
         </SidebarItem>
         <SidebarItem className="mt-auto">
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <PollCreation/>
+          {/* <PollCreation/> */}
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <Poppy />
+          <ControlSettings />
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <PollResults />
+          {/* <PollResults /> */}
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <PollVoting />
+          {/* <PollVoting /> */}
         </SidebarItem>
           <SidebarItem>
           <SidebarLabel>Support</SidebarLabel>
           <NavSecondary items={data.navSecondary} />
         </SidebarItem>
         <SidebarItem>
-          <StorageCard />
+          {/* <StorageCard /> */}
         </SidebarItem>
       </SidebarContent>
       </ScrollArea>
