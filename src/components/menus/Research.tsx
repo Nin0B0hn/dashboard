@@ -9,13 +9,13 @@ import { PollResults } from "@/components/poll-components/poll-results-card";
 import { PollVoting } from "@/components/poll-components/poll-voting-card";
 import { useState } from 'react';
 
-export function ControlSettings() {
+export function Research() {
   const [activeTab, setActiveTab] = useState<string>('Current Polls');
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">Research</Button>
+        <Button variant="ghost">Research</Button>
       </PopoverTrigger>
 
       <Draggable>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react';
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/app-sidebar_OLD";
 
 declare global {
   interface UnityInstance {

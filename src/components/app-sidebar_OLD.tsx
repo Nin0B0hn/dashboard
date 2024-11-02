@@ -39,7 +39,7 @@ import {
   SidebarHeader,
   SidebarItem,
   SidebarLabel,
-  SidebarTrigger,
+  // SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 // import {Poppy} from '@/components/poppy';
@@ -47,7 +47,7 @@ import {
 // import { PollResults } from "@/components/poll-components/poll-results";
 // import { PollVoting } from "@/components/poll-components/poll-voting";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {ControlSettings} from "@/components/menus/ControlSettings";
+import {Research} from "@/components/menus/Research";
 
 const data = {
   teams: [
@@ -128,7 +128,7 @@ const data = {
     },
     {
       title: "Research",
-      url: "#",
+      url:"#",
       icon: Microscope,
       items: [
         {
@@ -220,21 +220,21 @@ const data = {
     },
   ],
   projects: [
-    {
-      name: "Rural Planning",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Socio-Economic Analysis",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Geo-Spatial Analysis",
-      url: "#",
-      icon: Map,
-    },
+    // {
+    //   name: "Rural Planning",
+    //   url: "#",
+    //   icon: Frame,
+    // },
+    // {
+    //   name: "Socio-Economic Analysis",
+    //   url: "#",
+    //   icon: PieChart,
+    // },
+    // {
+    //   name: "Geo-Spatial Analysis",
+    //   url: "#",
+    //   icon: Map,
+    // },
   ],
   searchResults: [
     {
@@ -291,9 +291,7 @@ export function AppSidebar() {
         </SidebarItem>
         <SidebarItem>
           <SidebarLabel>Research</SidebarLabel>
-          <SidebarTrigger>  
-            
-          </SidebarTrigger>
+          <Research />
         </SidebarItem>
         <SidebarItem className="mt-auto">
         </SidebarItem>
@@ -301,7 +299,7 @@ export function AppSidebar() {
           {/* <PollCreation/> */}
         </SidebarItem>
         <SidebarItem className="mt-auto">
-          <ControlSettings />
+          <Research />
         </SidebarItem>
         <SidebarItem className="mt-auto">
           {/* <PollResults /> */}

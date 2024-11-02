@@ -151,7 +151,7 @@ export function PollVoting({ isActive }: PollVotingProps) {
   const selectedPoll = filteredPolls.find((poll) => poll.id === selectedPollId);
 
   return (
-    <Card className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto ">
+    <Card className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto">
       <CardHeader>
         <CardTitle className="text-lg font-medium text-gray-800">
           Current Polls

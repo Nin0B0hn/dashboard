@@ -132,7 +132,7 @@ export function PollResults() {
   return (
 // className="backdrop-blur-lg bg-white/70 shadow-lg rounded-md max-w-lg w-full p-4"
     <Card onChange={(open) => open && fetchPollResults()}
-    className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto md:h-[650px]">
+    className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto">
       <CardHeader>
         <CardTitle className="text-lg font-medium text-gray-800">
           View Poll Results
