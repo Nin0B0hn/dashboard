@@ -8,12 +8,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 // import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/lib/supabaseClient"; // Supabase importieren
 import { useToast } from "@/hooks/use-toast"; // Toast importieren
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 
 interface Option {
   label: string;
@@ -23,7 +17,7 @@ interface Option {
 export function PollCreation() {
   const [pollQuestion, setPollQuestion] = useState("");
   const [options, setOptions] = useState<Option[]>([{ label: "", value: 1 }]);
-  const [size] = useState({ width: 566, height: 550 });
+  // const [size] = useState({ width: 566, height: 500 });
 
   const { toast } = useToast(); // Verwende useToast
 
@@ -81,17 +75,8 @@ export function PollCreation() {
   };
 
   return (
-      <Card className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium text-gray-800">
-            Create a Poll
-          </CardTitle>
-        </CardHeader>
-        <ScrollArea className="rounded-md border">
-          <CardContent 
-          className="space-y-4"
-          style={{ width: size.width, height: size.height, overflow: "auto" }}>
-        
+      
+        <ScrollArea className="h-[450px]">
           <div className="grid gap-4">
             <div className="space-y-2">
               {/* <h4 className="font-medium leading-none">Create a Poll</h4> */}
@@ -100,7 +85,7 @@ export function PollCreation() {
               </p>
             </div>
             <form onSubmit={handleSubmit} className="grid gap-4">
-              <div className="grid grid-cols-2 items-center gap-2">
+              <div className="grid grid-cols-2 items-center gap-2 overflow-visible">
                 {/* <Label htmlFor="pollQuestion">Question</Label> */}
                 <Input
                   id="pollQuestion"
@@ -135,8 +120,6 @@ export function PollCreation() {
               </Button>
             </form>
           </div>
-        </CardContent>
         </ScrollArea>
-      </Card>
   );
 }

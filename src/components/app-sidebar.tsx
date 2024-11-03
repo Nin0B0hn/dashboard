@@ -8,11 +8,8 @@ import {
   Bot,
   Code2,
   Eclipse,
-  Frame,
   History,
   LifeBuoy,
-  Map,
-  PieChart,
   Rabbit,
   Send,
   Settings2,
@@ -47,7 +44,7 @@ import {
 // import { PollResults } from "@/components/poll-components/poll-results";
 // import { PollVoting } from "@/components/poll-components/poll-voting";
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {Research} from "@/components/menus/Research";
+import {ControlSettings} from "@/components/menus/control-settings";
 
 const data = {
   teams: [
@@ -289,23 +286,8 @@ export function AppSidebar() {
           <SidebarLabel>Projects</SidebarLabel>
           <NavProjects projects={data.projects} />
         </SidebarItem>
-        <SidebarItem>
-          <SidebarLabel>Research</SidebarLabel>
-          <Research />
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-          {/* <PollCreation/> */}
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-          <Research />
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-          {/* <PollResults /> */}
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-          {/* <PollVoting /> */}
+        <SidebarItem className="justify-start">
+        <ControlSettings />
         </SidebarItem>
           <SidebarItem>
           <SidebarLabel>Support</SidebarLabel>

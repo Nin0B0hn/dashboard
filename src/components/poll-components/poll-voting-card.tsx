@@ -15,12 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -56,7 +51,7 @@ type PollVotingProps = {
 export function PollVoting({ isActive }: PollVotingProps) {
   const [polls, setPolls] = useState<Poll[]>([]);
   const { toast } = useToast();
-  const [size] = useState({ width: "auto", height: 550 });
+  // const [size] = useState({ width: "auto", height: 550 });
 
   // Zustand für den Suchbegriff
   const [searchTerm, setSearchTerm] = useState("");
@@ -151,17 +146,7 @@ export function PollVoting({ isActive }: PollVotingProps) {
   const selectedPoll = filteredPolls.find((poll) => poll.id === selectedPollId);
 
   return (
-    <Card className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium text-gray-800">
-          Current Polls
-        </CardTitle>
-      </CardHeader>
-      <ScrollArea className="rounded-md border">
-        <CardContent
-          className="space-y-4"
-          style={{ width: size.width, height: size.height, overflow: "auto" }}
-        >
+      <ScrollArea className="h-[450px]">
           <div className="grid gap-4">
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground">
@@ -274,8 +259,6 @@ export function PollVoting({ isActive }: PollVotingProps) {
               </form>
             </Form>
           </div>
-        </CardContent>
       </ScrollArea>
-    </Card>
   );
 }

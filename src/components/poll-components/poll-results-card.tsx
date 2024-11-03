@@ -11,13 +11,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
+
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { interpretOPI } from '@/utils/interpretOPI';
@@ -44,7 +39,7 @@ interface Poll {
 
 export function PollResults() {
   const [pollResults, setPollResults] = useState<Poll[]>([]);
-  const [size] = useState({ width: "auto", height: 550 });
+  // const [size] = useState({ width: "auto", height: 550 });
 
   const [searchTerm, setSearchTerm] = useState("");
   const [minOpi, setMinOpi] = useState(0);
@@ -130,33 +125,22 @@ export function PollResults() {
   });
 
   return (
-// className="backdrop-blur-lg bg-white/70 shadow-lg rounded-md max-w-lg w-full p-4"
-    <Card onChange={(open) => open && fetchPollResults()}
-    className="backdrop-blur-lg shadow-lg rounded-md p-4 w-full h-auto">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium text-gray-800">
-          View Poll Results
-        </CardTitle>
-      </CardHeader>
-      <ScrollArea className="rounded-md border">
-          <CardContent
-            className="space-y-4"
-            style={{ width: size.width, height: size.height, overflow: "auto" }}
-          >
+
+      <ScrollArea className="h-[450px]" onChange={(open) => open && fetchPollResults()}>
             <div className="grid gap-4">
               <div className="space-y-2">
                 {/* <h4 className="font-medium leading-none">Poll Results</h4> */}
 
                 {/* Filter-Eingabefelder */}
                 <div className="flex space-x-4 mb-4">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Search Polls"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="border p-2 rounded"
                   />
-                  <input
+                  <Input
                     type="number"
                     placeholder="Min OPI"
                     value={minOpi}
@@ -166,7 +150,7 @@ export function PollResults() {
                     max={100}
                     step={0.01}
                   />
-                  <input
+                  <Input
                     type="number"
                     placeholder="Max OPI"
                     value={maxOpi}
@@ -209,8 +193,8 @@ export function PollResults() {
                 )}
               </div>
             </div>
-          </CardContent>
+
       </ScrollArea>
-    </Card>
+    // </Card>
   );
 }

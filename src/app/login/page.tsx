@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 import { LoginForm } from "@/components/login-form"
-import { AppSidebar } from "@/components/app-sidebar_OLD"
+import { AppSidebar } from "@/components/app-sidebar"
 
 
 export default function Page() {
