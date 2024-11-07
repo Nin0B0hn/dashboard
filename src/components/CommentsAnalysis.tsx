@@ -40,7 +40,7 @@ const CommentsAnalysis = () => {
   return (
     <div className="p-4">
       {/* <h2 className="text-2xl font-bold mb-4">Content Analysis</h2> */}
-      <ScrollArea className="h-64 p-4 border">
+      <ScrollArea className="h-96 p-4 border">
         <h3 className="text-xl font-semibold mb-2">Thematic Analysis</h3>
         <p>{thematicAnalysis}</p>
       </ScrollArea>
