@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import Draggable from "react-draggable";
 import CommentTab from "./tabs/comment-tab"
 import ResearchTab from "./tabs/research-tab"
+import UserTab from "./tabs/user-tab"
+
 import { 
   MessagesSquare, 
   Microscope,
@@ -47,7 +49,7 @@ export function ControlSettings() {
             <TabsTrigger value="comment"><MessagesSquare className="h-4 w-8" />Comment</TabsTrigger>
           </TabsList>
           <TabsContent value="user">
-            {/* <UserTab /> */}
+            <UserTab />
           </TabsContent>
           <TabsContent value="research">
             <ResearchTab />

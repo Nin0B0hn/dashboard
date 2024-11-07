@@ -6,13 +6,16 @@
 import { 
     ChartColumn,
     FilePlus,
-    Vote, 
+    Vote,
+    FileChartPie,
+     
 } from "lucide-react"
 // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {PollCreation} from '@/components/poll-components/poll-create-card';
 import { PollResults } from "@/components/poll-components/poll-results-card";
 import { PollVoting } from "@/components/poll-components/poll-voting-card";
+import CommentsAnalysis from '@/components/CommentsAnalysis';
 import { useState } from 'react';
 
 export default function ResearchTab() {
@@ -20,7 +23,7 @@ export default function ResearchTab() {
   
     return (
       <Tabs defaultValue="poll-create" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="poll-create" className="flex items-center gap-2">
             <FilePlus className="h-4 w-4" />
             Create Poll
@@ -33,6 +36,10 @@ export default function ResearchTab() {
             <ChartColumn className="h-4 w-4" />
             View Results
           </TabsTrigger>
+          <TabsTrigger value="CommentsAnalysis" className="flex items-center gap-2">
+            <FileChartPie className="h-4 w-4" />
+            Qual. Results
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="poll-create" className="space-y-4 mt-4">
         <PollCreation />
@@ -42,6 +49,9 @@ export default function ResearchTab() {
         </TabsContent>
         <TabsContent value="poll-results" className="mt-4">
         <PollResults />
+        </TabsContent>
+        <TabsContent value="CommentsAnalysis" className="mt-4">
+        <CommentsAnalysis/>
         </TabsContent>
       </Tabs>
     )

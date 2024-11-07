@@ -27,11 +27,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 1200 }}>
+        <AppSidebar />
+        </div> */}
         {children}
         <Toaster />  {/* Toaster-Komponente hier hinzufügen */}
       </body>
     </html>
   );
 }
+
